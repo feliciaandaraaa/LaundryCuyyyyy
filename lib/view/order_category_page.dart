@@ -926,17 +926,17 @@ class _CategoryOrderPageState extends State<CategoryOrderPage> {
   Color _getCategoryColor() {
     switch (widget.category) {
       case LaundryCategory.pakaian:
-        return Colors.blue;
+        return const Color.fromARGB(255, 123, 191, 247);
       case LaundryCategory.tas:
-        return Colors.green;
+        return const Color.fromARGB(255, 144, 212, 146);
       case LaundryCategory.sepatu:
-        return Colors.orange;
+        return const Color.fromARGB(255, 221, 126, 221);
       case LaundryCategory.kering:
-        return Colors.purple;
+        return const Color.fromARGB(255, 217, 84, 247);
       case LaundryCategory.setrika:
-        return Colors.red;
+        return const Color.fromARGB(255, 234, 135, 128);
       case LaundryCategory.karpet:
-        return Colors.teal;
+        return const Color.fromARGB(255, 59, 214, 199);
     }
   }
 

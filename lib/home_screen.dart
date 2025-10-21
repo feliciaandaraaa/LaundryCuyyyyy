@@ -172,7 +172,9 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 60,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              border: Border.all(color: Colors.white.withOpacity(0.3)),
+              border: Border.all(
+                  color:
+                      const Color.fromARGB(255, 45, 202, 233).withOpacity(0.3)),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(30),
@@ -195,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Halo, ${widget.username}!',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 255, 255, 255),
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -213,7 +215,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // Logout button
           IconButton(
             onPressed: _logout,
-            icon: const Icon(Icons.logout, color: Colors.white),
+            icon: const Icon(Icons.logout,
+                color: Color.fromARGB(219, 50, 213, 72)),
             tooltip: 'Logout',
           ),
         ],
@@ -286,7 +289,7 @@ class _HomeScreenState extends State<HomeScreen> {
       gradient: LinearGradient(
         colors: [
           Colors.white.withOpacity(0.12),
-          Colors.white.withOpacity(0.04),
+          const Color.fromARGB(255, 221, 93, 93).withOpacity(0.04),
         ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,

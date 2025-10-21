@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:aplikasitest1/models/base_model.dart';
 import 'package:aplikasitest1/models/laundry_item.dart';
 
-
 abstract class LaundryServiceBase extends BaseModel {
   String get name;
   String get description;
   String get icon;
   Color get color;
   LaundryCategory get category;
-  
-  double calculatePrice(List<LaundryItem> items);
-  
-    int getEstimatedDays();
-}
 
+  double calculatePrice(List<LaundryItem> items);
+
+  int getEstimatedDays();
+}
 
 class LaundryService extends LaundryServiceBase implements Identifiable {
   final String _id;
@@ -38,36 +36,36 @@ class LaundryService extends LaundryServiceBase implements Identifiable {
     double multiplier = 1.0,
     int estimatedDays = 3,
     bool isActive = true,
-  }) : _id = id,
-       _name = name,
-       _description = description,
-       _icon = icon,
-       _color = color,
-       _category = category,
-       _multiplier = multiplier,
-       _estimatedDays = estimatedDays,
-       _isActive = isActive;
+  })  : _id = id,
+        _name = name,
+        _description = description,
+        _icon = icon,
+        _color = color,
+        _category = category,
+        _multiplier = multiplier,
+        _estimatedDays = estimatedDays,
+        _isActive = isActive;
 
   @override
   String get id => _id;
-  
+
   @override
   String get name => _name;
-  
+
   @override
   String get description => _description;
-  
+
   @override
   String get icon => _icon;
-  
+
   @override
   Color get color => _color;
-  
+
   @override
   LaundryCategory get category => _category;
-  
+
   double get multiplier => _multiplier;
-  
+
   bool get isActive => _isActive;
 
   @override
@@ -91,7 +89,7 @@ class LaundryService extends LaundryServiceBase implements Identifiable {
         name: 'Cuci Kering',
         description: 'Cuci bersih dan pengeringan sempurna',
         icon: '👕',
-        color: Colors.blue,
+        color: const Color.fromARGB(146, 139, 192, 236),
         category: LaundryCategory.pakaian,
         multiplier: 1.0,
         estimatedDays: 2,
@@ -106,15 +104,15 @@ class LaundryService extends LaundryServiceBase implements Identifiable {
         multiplier: 1.5,
         estimatedDays: 3,
       ),
-      LaundryService( 
-      id: 'cuci-tas',
-      name: 'Cuci Tas', 
-      description: 'Layanan Cuci Tas', 
-      icon: '🎒', 
-      color: Colors.deepPurple, 
-      category: LaundryCategory.tas,
-      multiplier: 1.5,
-      estimatedDays:6,
+      LaundryService(
+        id: 'cuci-tas',
+        name: 'Cuci Tas',
+        description: 'Layanan Cuci Tas',
+        icon: '🎒',
+        color: Colors.deepPurple,
+        category: LaundryCategory.tas,
+        multiplier: 1.5,
+        estimatedDays: 6,
       ),
       LaundryService(
         id: 'setrika-saja',
@@ -159,8 +157,6 @@ class LaundryService extends LaundryServiceBase implements Identifiable {
     ];
   }
 
-
-
   factory LaundryService.fromMap(Map<String, dynamic> map) {
     return LaundryService(
       id: map['id'] ?? '',
@@ -178,7 +174,7 @@ class LaundryService extends LaundryServiceBase implements Identifiable {
     );
   }
 
-  factory LaundryService.fromJson(String source) => 
+  factory LaundryService.fromJson(String source) =>
       LaundryService.fromMap(json.decode(source));
 
   @override

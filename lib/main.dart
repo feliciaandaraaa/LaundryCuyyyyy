@@ -1,12 +1,14 @@
-import 'package:aplikasitest1/view/admin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'controllers/auth_controller.dart';
-import 'controllers/order_controller.dart';
-import 'services/auth_service.dart';
-import 'splash_screen.dart';
+import 'package:aplikasitest1/controllers/auth_controller.dart';
+import 'package:aplikasitest1/controllers/order_controller.dart';
+import 'package:aplikasitest1/services/auth_service.dart';
+import 'package:aplikasitest1/splash_screen.dart';
+import 'package:aplikasitest1/view/admin_page.dart';
 
 void main() {
+  // Pastikan Flutter sudah initialize sebelum menggunakan SharedPreferences
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -30,7 +32,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: const SplashScreen(),
+        home: const SplashScreen(), // Mulai dari SplashScreen
         routes: {
           '/admin': (context) => const AdminPanel(),
         },

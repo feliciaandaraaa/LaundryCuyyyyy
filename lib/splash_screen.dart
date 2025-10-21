@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:aplikasitest1/services/auth_service.dart';
 import 'package:aplikasitest1/view/LoginPage.dart';
+import 'package:aplikasitest1/home_screen.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -41,14 +43,54 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController.forward();
 
-    // Navigate to LoginPage setelah 4 detik
-    Future.delayed(const Duration(seconds: 8), () {
+    // Cek status login setelah animasi selesai
+    _checkLoginAndNavigate();
+  }
+
+  Future<void> _checkLoginAndNavigate() async {
+    // Tunggu 4 detik untuk animasi splash screen
+    await Future.delayed(const Duration(seconds: 4));
+
+    if (!mounted) return;
+
+    try {
+      final authService = AuthService();
+      final isLoggedIn = await authService.isLoggedIn();
+
+      if (isLoggedIn) {
+        // User sudah login, ambil data user
+        final user = await authService.getCurrentUser();
+
+        if (user != null && mounted) {
+          // Langsung ke HomeScreen dengan data user
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => HomeScreen(
+                userId: user['id'] ?? '',
+                username: user['username'] ?? 'User',
+              ),
+            ),
+          );
+          return;
+        }
+      }
+
+      // Jika belum login atau gagal ambil data, ke LoginPage
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const LoginPage()),
         );
       }
-    });
+    } catch (e) {
+      print('Error checking login status: $e');
+
+      // Jika ada error, tetap ke LoginPage
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+        );
+      }
+    }
   }
 
   @override
