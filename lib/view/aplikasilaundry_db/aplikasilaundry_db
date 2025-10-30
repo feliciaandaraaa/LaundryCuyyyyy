@@ -1,0 +1,398 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Sep 22, 2025 at 02:23 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `aplikasi_laundry`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admins`
+--
+
+CREATE TABLE `admins` (
+  `id_admin` int(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(225) NOT NULL,
+  `role` enum('superadmin','staff') NOT NULL DEFAULT 'staff',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delivery_zones`
+--
+
+CREATE TABLE `delivery_zones` (
+  `id_zone` int(11) NOT NULL,
+  `nama_zone` varchar(100) NOT NULL,
+  `ongkir` decimal(10,2) NOT NULL,
+  `estimasi_jam` int(11) NOT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `drivers`
+--
+
+CREATE TABLE `drivers` (
+  `id_driver` int(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `no_handphone` varchar(15) NOT NULL,
+  `kendaraan` varchar(50) NOT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `laundry_services`
+--
+
+CREATE TABLE `laundry_services` (
+  `id_service` int(11) NOT NULL,
+  `nama_service` varchar(100) NOT NULL,
+  `kategori` enum('pakaian','sepatu','tas','karpet','kering','setrika') NOT NULL,
+  `harga` decimal(10,2) NOT NULL,
+  `tipe_harga` enum('per_kg','per_item') NOT NULL DEFAULT 'per_kg',
+  `estimasi_hari` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id_notif` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `pesan` text NOT NULL,
+  `status` enum('terkirim','dibaca') NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orders`
+--
+
+CREATE TABLE `orders` (
+  `id_order` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_driver` int(11) DEFAULT NULL,
+  `id_zone` int(11) NOT NULL,
+  `status` enum('menunggu','dijemput','diproses','selesai','dibatalkan') NOT NULL DEFAULT 'menunggu',
+  `tanggal_pesan` timestamp NOT NULL DEFAULT current_timestamp(),
+  `tanggal_selesai` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_item`
+--
+
+CREATE TABLE `order_item` (
+  `id_item` int(11) NOT NULL,
+  `id_order` int(11) NOT NULL,
+  `id_service` int(11) NOT NULL,
+  `jumlah` int(11) NOT NULL DEFAULT 0,
+  `berat_kg` decimal(5,2) NOT NULL DEFAULT 0.00,
+  `subtotal` decimal(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payments`
+--
+
+CREATE TABLE `payments` (
+  `id_payment` int(11) NOT NULL,
+  `id_order` int(11) NOT NULL,
+  `metode` enum('cash','transfer','ewallet') NOT NULL,
+  `jumlah` decimal(10,2) NOT NULL,
+  `status` enum('ditunda','lunas','gagal') NOT NULL DEFAULT 'ditunda',
+  `tanggal_bayar` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `reviews`
+--
+
+CREATE TABLE `reviews` (
+  `id_review` int(11) NOT NULL,
+  `id_order` int(11) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `komentar` text NOT NULL,
+  `tanggal_review` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id_user` int(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(225) NOT NULL,
+  `no_handphone` varchar(15) NOT NULL,
+  `alamat` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `admins`
+--
+ALTER TABLE `admins`
+  ADD PRIMARY KEY (`id_admin`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `delivery_zones`
+--
+ALTER TABLE `delivery_zones`
+  ADD PRIMARY KEY (`id_zone`);
+
+--
+-- Indexes for table `drivers`
+--
+ALTER TABLE `drivers`
+  ADD PRIMARY KEY (`id_driver`);
+
+--
+-- Indexes for table `laundry_services`
+--
+ALTER TABLE `laundry_services`
+  ADD PRIMARY KEY (`id_service`);
+
+--
+-- Indexes for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id_notif`),
+  ADD KEY `id_user` (`id_user`);
+
+--
+-- Indexes for table `orders`
+--
+ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id_order`),
+  ADD KEY `id_driver` (`id_driver`),
+  ADD KEY `id_zone` (`id_zone`),
+  ADD KEY `id_user` (`id_user`);
+
+--
+-- Indexes for table `order_item`
+--
+ALTER TABLE `order_item`
+  ADD PRIMARY KEY (`id_item`),
+  ADD KEY `id_order` (`id_order`),
+  ADD KEY `id_service` (`id_service`);
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
+  ADD PRIMARY KEY (`id_payment`),
+  ADD KEY `id_order` (`id_order`);
+
+--
+-- Indexes for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD PRIMARY KEY (`id_review`),
+  ADD KEY `id_order` (`id_order`);
+
+--
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id_user`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `admins`
+--
+ALTER TABLE `admins`
+  MODIFY `id_admin` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `delivery_zones`
+--
+ALTER TABLE `delivery_zones`
+  MODIFY `id_zone` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `drivers`
+--
+ALTER TABLE `drivers`
+  MODIFY `id_driver` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `laundry_services`
+--
+ALTER TABLE `laundry_services`
+  MODIFY `id_service` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id_notif` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `orders`
+--
+ALTER TABLE `orders`
+  MODIFY `id_order` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `order_item`
+--
+ALTER TABLE `order_item`
+  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `id_payment` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `reviews`
+--
+ALTER TABLE `reviews`
+  MODIFY `id_review` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`id_user`) REFERENCES `user` (`id_user`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`id_driver`) REFERENCES `drivers` (`id_driver`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `orders_ibfk_3` FOREIGN KEY (`id_zone`) REFERENCES `delivery_zones` (`id_zone`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `order_item`
+--
+ALTER TABLE `order_item`
+  ADD CONSTRAINT `order_item_ibfk_1` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id_order`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `order_item_ibfk_2` FOREIGN KEY (`id_service`) REFERENCES `laundry_services` (`id_service`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `payments`
+--
+ALTER TABLE `payments`
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id_order`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `reviews`
+--
+ALTER TABLE `reviews`
+  ADD CONSTRAINT `reviews_ibfk_1` FOREIGN KEY (`id_order`) REFERENCES `orders` (`id_order`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+
+INSERT INTO `user` (nama, email, password, no_handphone, alamat) VALUES
+('Budi Santoso', 'budi@mail.com', '12345', '08123456789', 'Jl. Melati No. 5'),
+('Ani Setiawan', 'ani@mail.com', '12345', '08234567890', 'Jl. Mdiponegoro No. 10'),
+('Rizky Hidayat', 'rizky@mail.com', '12345', '08334567891', 'Jl. ahmad yani No. 2');
+
+
+INSERT INTO `admins` (nama, email, password, role) VALUES
+('Admin Utama', 'admin@mail.com', 'admin123', 'superadmin'),
+('Staff Andi', 'staffandi@mail.com', 'staff123', 'staff');
+
+
+INSERT INTO `drivers` (nama, no_handphone, kendaraan, status) VALUES
+('Joko', '081234567890', 'Motor', 'aktif'),
+('Slamet', '082345678901', 'Mobil', 'aktif');
+
+
+INSERT INTO `delivery_zones` (nama_zone, ongkir, estimasi_jam, status) VALUES
+('Zone 1', 5000.00, 2, 'aktif'),
+('Zone 2', 10000.00, 3, 'aktif');
+
+
+INSERT INTO `laundry_services` (nama_service, kategori, harga, tipe_harga, estimasi_hari) VALUES
+('Cuci Kering', 'pakaian', 7000.00, 'per_kg', 2),
+('Cuci Sepatu', 'sepatu', 25000.00, 'per_item', 3);
+
+
+INSERT INTO `orders` (id_user, id_driver, id_zone, status) VALUES
+(1, 1, 1, 'menunggu'),
+(2, 2, 2, 'diproses');
+
+
+INSERT INTO `order_item` (id_order, id_service, jumlah, berat_kg, subtotal) VALUES
+(1, 1, 0, 2.5, 17500.00),
+(2, 2, 1, 0.0, 25000.00);
+
+INSERT INTO `payments` (id_order, metode, jumlah, status, tanggal_bayar) VALUES
+(1, 'cash', 17500.00, 'lunas', NOW()),
+(2, 'transfer', 25000.00, 'ditunda', NULL);
+
+
+INSERT INTO `reviews` (id_order, rating, komentar) VALUES
+(1, 5, 'Puas banget, cepat dan bersih!'),
+(2, 5, 'Baju bersih dan Wangi dan Pelayanan yang Cepat');
+
+
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
